@@ -1,0 +1,22 @@
+{
+  "name": "pixiexperiments",
+  "version": "1.0.0",
+  "description": "simple pixi experiments",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dylmarcor/pixiExperiments.git"
+  },
+  "author": "dylmarcor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dylmarcor/pixiExperiments/issues"
+  },
+  "homepage": "https://github.com/dylmarcor/pixiExperiments#readme",
+  "dependencies": {
+    "http-server": "^0.10.0"
+  }
+}
