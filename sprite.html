@@ -17,7 +17,9 @@
             resources = PIXI.loader.resources,
             TextureCache = PIXI.utils.TextureCache,
             Sprite = PIXI.Sprite,
-            Rectangle = PIXI.Rectangle
+            Rectangle = PIXI.Rectangle,
+            Text = PIXI.Text,
+            TextStyle = PIXI.TextStyle
 
         // New Pixi Application
         let app = new Application({
@@ -32,9 +34,29 @@
 
         loader 
             .add("images/Sprite001.png")
+            .add("images/Block001.png")
             .load(setup)
 
-        let sprite, state
+        let sprite, block, state
+
+        // Style for text
+        let textstyle = new TextStyle({
+            fontFamily: "Helvetica",
+            fontSize: 36,
+            fill: "white",
+            stroke: '#ff3300',
+            strokeThickness: 4,
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowBlur: 4,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowDistance: 6,
+        })
+
+        // Add text to screen
+        let message = new Text("Hello Sprite!", textstyle)
+
+        
 
         function setup() {
             // Create the sprite
@@ -43,6 +65,13 @@
             sprite.vx = 0
             sprite.vy = 0
             app.stage.addChild(sprite)
+
+            block = new Sprite(resources["images/Block001.png"].texture)
+            block.x = 64
+            block.y = 16
+            block.vx = 0
+            block.vy = 0
+            app.stage.addChild(block)
 
             // Capture keyboard arrow keys
             let left = keyboard(37),
@@ -98,6 +127,8 @@
                 }
             }
 
+            app.stage.addChild(message)
+            message.position.set(54, 96)
             // Set Game state
             state = play
 
@@ -111,12 +142,18 @@
         }
 
         function play(delta) {
-
             // Use sprite velocity to move
             sprite.x += sprite.vx
             sprite.y += sprite.vy
+
+            if (hitTestRectangle(sprite, block)) {
+                message.text = "Hit!!!"
+            } else {
+                message.text = "No hits..."
+            }
         }
 
+        // Keyboard function for player moves
         function keyboard(keyCode) {
             let key = {}
             key.code = keyCode
@@ -152,6 +189,53 @@
                 "keyup", key.upHandler.bind(key), false
             )
             return key
+        }
+
+        // Collision detection
+        function hitTestRectangle(r1, r2) {
+            // Define variables needed to calculate
+            let hit, combinedHalfWidths, combinedHalfHeights, vx, vy
+
+            // Hit to determine collsion boolean
+            hit = false
+
+            // Find center points of given sprites
+            r1.centerX = r1.x + r1.width / 2
+            r1.centerY = r1.y + r1.height / 2
+            r2.centerX = r2.x + r2.width / 2
+            r2.centerY = r2.y + r2.height / 2
+
+            // Find the half-widths and heights of each sprite
+            r1.halfWidth = r1.width / 2
+            r1.halfHeight = r1.height / 2
+            r2.halfWidth = r2.width / 2
+            r2.halfHeight = r2.height / 2
+
+            // Calculate distance vector between the sprites
+            vx = r1.centerX - r2.centerX
+            vy = r1.centerY - r2.centerY
+
+            // Figure out combined half-widths and heights
+            combinedHalfWidths = r1.halfWidth + r2.halfWidth
+            combinedHalfHeights = r1.halfHeight + r2.halfHeight
+
+            // Check for collision on x axis
+            if (Math.abs(vx) < combinedHalfWidths) {
+                // A collision might be occuring. Check for collision on y axis
+                if (Math.abs(vy) < combinedHalfHeights) {
+                    // collision happening
+                    hit = true
+                } else {
+                    // no collision on y axis
+                    hit = false
+                }
+            } else {
+                // no collision on x axis
+                hit = false
+            }
+
+            // hit will either be true or false
+            return hit
         }
     </script>
 </body>
