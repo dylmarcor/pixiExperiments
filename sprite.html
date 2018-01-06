@@ -9,6 +9,8 @@
 </head>
 <body>
     <script>
+
+        // Aliases
         let Application = PIXI.Application,
             Container = PIXI.Container,
             loader = PIXI.loader,
@@ -17,6 +19,7 @@
             Sprite = PIXI.Sprite,
             Rectangle = PIXI.Rectangle
 
+        // New Pixi Application
         let app = new Application({
             width: 256,
             height: 256,
@@ -31,18 +34,124 @@
             .add("images/Sprite001.png")
             .load(setup)
 
-        let sprite
+        let sprite, state
 
         function setup() {
+            // Create the sprite
             sprite = new Sprite(resources["images/Sprite001.png"].texture)
             sprite.y = 96
+            sprite.vx = 0
+            sprite.vy = 0
             app.stage.addChild(sprite)
 
+            // Capture keyboard arrow keys
+            let left = keyboard(37),
+                up = keyboard(38),
+                right = keyboard(39),
+                down = keyboard(40)
+
+            // Left arrow key 'press' method
+            left.press = () => {
+                sprite.vx = -5
+                sprite.vy = 0
+            }
+
+            // Left arrow key 'release' method
+            left.release = () => {
+                // If left arrow released, and right isn't down,
+                // and sprite isn't moving vertically: Stop sprite
+                if (!right.isDown && sprite.vy === 0) {
+                    sprite.vx = 0
+                }
+            }
+
+            // Up movement method
+            up.press = () => {
+                sprite.vy = -5
+                sprite.vx = 0
+            }
+            up.release = () => {
+                if (!down.isDown && sprite.vx === 0) {
+                    sprite.vy = 0
+                }
+            }
+
+            // Right movement method
+            right.press = () => {
+                sprite.vx = 5
+                sprite.vy = 0
+            }
+            right.release = () => {
+                if (!left.isDown && sprite.vy === 0) {
+                    sprite.vx = 0
+                }
+            }
+
+            // Down movement method
+            down.press = () => {
+                sprite.vy = 5
+                sprite.vx = 0
+            }
+            down.release = () => {
+                if (!up.isDown && sprite.vx === 0) {
+                    sprite.vy = 0
+                }
+            }
+
+            // Set Game state
+            state = play
+
+            // Start the game loop
             app.ticker.add(delta => gameLoop(delta))
         }
 
         function gameLoop(delta) {
-            sprite.x += 1
+            // Update game state
+            state(delta)
+        }
+
+        function play(delta) {
+
+            // Use sprite velocity to move
+            sprite.x += sprite.vx
+            sprite.y += sprite.vy
+        }
+
+        function keyboard(keyCode) {
+            let key = {}
+            key.code = keyCode
+            key.isDown = false
+            key.isUp = true
+            key.press = undefined
+            key.release = undefined
+            // The down handle event
+            key.downHandler = event => {
+                if (event.keyCode === key.code) {
+                    if (key.isUp && key.press) key.press()
+                    key.isDown = true
+                    key.isUp = false
+                }
+                event.preventDefault()
+            }
+
+            // The up handle event
+            key.upHandler = event => {
+                if (event.keyCode === key.code) {
+                    if(key.isDown && key.release) key.release()
+                    key.isDown = false
+                    key.isUp = true
+                }
+                event.preventDefault()
+            }
+
+            // Event listeners
+            window.addEventListener(
+                "keydown", key.downHandler.bind(key), false
+            )
+            window.addEventListener(
+                "keyup", key.upHandler.bind(key), false
+            )
+            return key
         }
     </script>
 </body>

@@ -50,10 +50,10 @@
                     .add("images/Sprite001.png")
                     .load(setup);
                 
-                let sprite
+                let sprite, rocvket
 
                 function setup() {
-                    let sprite = new Sprite(resources["images/Sprite001.png"].texture)
+                    sprite = new Sprite(resources["images/Sprite001.png"].texture)
 
                     let tileset = TextureCache["images/tileset.png"]
 
@@ -61,7 +61,7 @@
 
                     tileset.frame = rectangle
 
-                    let rocket = new Sprite(tileset)
+                    rocket = new Sprite(tileset)
 
                     rocket.x = 32
                     rocket.y = 32
@@ -79,6 +79,8 @@
 
                 function gameLoop(delta) {
                     sprite.x += 1
+                    rocket.y += 1
+                    rocket.x += 1
                 }
 
                 // app.renderer.view.style.position = "absolute";
