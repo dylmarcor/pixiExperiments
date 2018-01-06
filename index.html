@@ -6,53 +6,86 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
     <title>PixiJS(001)</title>
-    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <link rel="stylesheet" href="style.css">
 </head>
     <body>
-        <!-- <style>* {padding: 0; margin: 0}</style> -->
-        <script type="text/javascript">
-            let type = "WebGL"
-            if(!PIXI.utils.isWebGLSupported()){
-                type = "canvas"
-            }
-        
-            PIXI.utils.sayHello(type)
-
-            // var scale = scaleToWindow(app.renderer.view)
-
-            // Create the Pixi Application
-            let app = new PIXI.Application({
-                width: 256,
-                height: 256,
-                antialias: true,
-                transparent: false,
-                resolution: 1
-            })
+        <div class="container">
+            <script type="text/javascript">
+                let type = "WebGL"
+                if(!PIXI.utils.isWebGLSupported()){
+                    type = "canvas"
+                }
             
-            // Load the Sprite texture so WebGL ready
-            
-            // let texture = PIXI.utils.TextureCache["images/Sprite001.png"]
-            // let sprite = new PIXI.Sprite(texture)
+                PIXI.utils.sayHello(type)
 
-            // Add the Canvas that Pixi created
-            document.body.appendChild(app.view)
+                // Aliases
+                let Application = PIXI.Application,
+                    loader = PIXI.loader,
+                    resources = PIXI.loader.resources,
+                    Sprite = PIXI.Sprite,
+                    TextureCache = PIXI.utils.TextureCache,
+                    Rectangle = PIXI.Rectangle
 
-            PIXI.loader
-                .add("images/Sprite001.png")
-                .load(setup);
-            
-            function setup() {
-                let sprite = new PIXI.Sprite(
-                    PIXI.loader.resources["images/Sprite001.png"].texture
-                );
+                // var scale = scaleToWindow(app.renderer.view)
 
-                app.stage.addChild(sprite)
-            }
+                // Create the Pixi Application
+                let app = new Application({
+                    width: 256,
+                    height: 256,
+                    antialias: true,
+                    transparent: false,
+                    resolution: 1
+                })
+                
+                // Load the Sprite texture so WebGL ready
+                
+                // let texture = PIXI.utils.TextureCache["images/Sprite001.png"]
+                // let sprite = new PIXI.Sprite(texture)
 
-            // app.renderer.view.style.position = "absolute";
-            // app.renderer.view.style.display = "block";
-            // app.renderer.autoResize = true;
-            // app.renderer.resize(window.innerWidth, window.innerHeight); </script>
+                // Add the Canvas that Pixi created
+                document.body.appendChild(app.view)
+
+                loader
+                    .add("images/tileset.png")
+                    .add("images/Sprite001.png")
+                    .load(setup);
+                
+                let sprite
+
+                function setup() {
+                    let sprite = new Sprite(resources["images/Sprite001.png"].texture)
+
+                    let tileset = TextureCache["images/tileset.png"]
+
+                    let rectangle = new Rectangle(256, 0, 64, 64)
+
+                    tileset.frame = rectangle
+
+                    let rocket = new Sprite(tileset)
+
+                    rocket.x = 32
+                    rocket.y = 32
+
+                    sprite.x = 96
+                    sprite.y = 96
+
+                    app.stage.addChild(sprite)
+                    app.stage.addChild(rocket)
+
+                    app.ticker.add(delta => gameLoop(delta))
+
+                    // renderer.render(stage)
+                }
+
+                function gameLoop(delta) {
+                    sprite.x += 1
+                }
+
+                // app.renderer.view.style.position = "absolute";
+                // app.renderer.view.style.display = "block";
+                // app.renderer.autoResize = true;
+                // app.renderer.resize(window.innerWidth, window.innerHeight); </script>
+        </div>
     </body>
 </html>
     

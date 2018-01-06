@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
+    <title>Sprite Moves</title>
+</head>
+<body>
+    <script>
+        let Application = PIXI.Application,
+            Container = PIXI.Container,
+            loader = PIXI.loader,
+            resources = PIXI.loader.resources,
+            TextureCache = PIXI.utils.TextureCache,
+            Sprite = PIXI.Sprite,
+            Rectangle = PIXI.Rectangle
+
+        let app = new Application({
+            width: 256,
+            height: 256,
+            antialias: true,
+            transparent: false,
+            resolution: 1
+        })
+
+        document.body.appendChild(app.view)
+
+        loader 
+            .add("images/Sprite001.png")
+            .load(setup)
+
+        let sprite
+
+        function setup() {
+            sprite = new Sprite(resources["images/Sprite001.png"].texture)
+            sprite.y = 96
+            app.stage.addChild(sprite)
+
+            app.ticker.add(delta => gameLoop(delta))
+        }
+
+        function gameLoop(delta) {
+            sprite.x += 1
+        }
+    </script>
+</body>
+</html>
